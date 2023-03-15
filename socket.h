@@ -43,6 +43,7 @@ private:
     bool open;
     Event terminator;
 public:
+    Socket();
     Socket(std::string const & ipAddress, unsigned int port);
     Socket(int socketFD);
     Socket(Socket const & s);

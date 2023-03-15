@@ -5,7 +5,10 @@
 
 #include "socket.h"
 namespace Sync{
-	
+Socket::Socket()
+{
+
+}
 Socket::Socket(std::string const & ipAddress, unsigned int port)
     : Blockable(),open(false)
 {
