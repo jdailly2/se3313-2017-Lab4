@@ -18,23 +18,26 @@ class SocketThread: public Thread{
     public:
       bool isConnected;
       bool endServer = false;
-      Socket sock;
+      Socket& socket;
+
+      ~SocketThread()
+    {}
    
-       SocketThread(Socket cliSock):Thread(){
-            this-> sock = cliSock;
-            this->isConnected = true;
-        }
+       SocketThread(Socket& socket)
+    : socket(socket) {
+        this->isConnected = true;
+    }
 
         Socket& GetSocket()
     {
-        return sock;
+        return socket;
     }
 
     virtual long ThreadMain(void) override{
         ByteArray message;
 
         while(!endServer){
-            int bytes = sock.Read(message);
+            int bytes = socket.Read(message);
             if (bytes == 0) {
                 isConnected = false;
                 break;
@@ -49,8 +52,9 @@ class SocketThread: public Thread{
             for (auto & c: altMessage) c = toupper(c);
             std::cout << "The altered Message: " << altMessage<<std::endl;
 
-            sock.Write(altMessage);
+            socket.Write(altMessage);
         }
+        socket.Close();
         return 0;
         }
 };
@@ -76,10 +80,10 @@ class ServerThread : public Thread{
     {
         while(!endServer){
             try {
-                Socket sock(serSock.Accept());
+                Socket* newSocket = new Socket(serSock.Accept());
                 std::cout << "The Client has connected" << std::endl;
-                SocketThread* st = new SocketThread(sock);
-                tStack.push(st);
+                Socket& socketReference = *newSocket;
+                tStack.push(new SocketThread(socketReference));
             } catch(...) {
                 endServer = true;
             }
