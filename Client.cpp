@@ -1,6 +1,7 @@
 #include "socket.h"
 #include <iostream>
 #include <stdlib.h>
+#include <cstdlib>
 #include <time.h>
 #include <string>
 using namespace std;
@@ -26,26 +27,20 @@ int main(void)
 		std::cout << "I am a client please type somthing" << std::endl;
 		std::cin >> userInput;
 
-		//writes to the server
-		sock.Write(ByteArray(userInput));
-		ByteArray alterMessage;
+		if (userInput != "Done") {
+			//writes to the server
+			sock.Write(ByteArray(userInput));
+			ByteArray alterMessage;
 
-		//reads the return message from the Server
-		sock.Read(alterMessage);
-		std::cout<<"The new message: "<< alterMessage.ToString()<<std::endl;
-
-
+			//reads the return message from the Server
+			sock.Read(alterMessage);
+			std::cout<<"The new message: "<< alterMessage.ToString()<<std::endl;
 		}
-
+		
+		
+		}
+		std::cout<< "Quitting" << std::endl;
 		sock.Close();
-
-
-
+		std::exit(0);
 	}
-  
-
-	
-	
-
-
 }
